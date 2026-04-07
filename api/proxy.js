@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
     const path = req.query.path || '';
     
-    // Strip leading slash if present, then build target URL WITHOUT /api
-    const targetURL = `http://13.217.211.79:5000/${path}`;
+    // Your backend uses /api/session/... so keep the full path
+    const targetURL = `http://13.217.211.79:5000/api/${path}`;
 
     console.log("Proxying to:", targetURL);
 
@@ -18,7 +18,6 @@ export default async function handler(req, res) {
 
         const backendRes = await fetch(targetURL, fetchOptions);
         
-        // Handle non-JSON responses too
         const contentType = backendRes.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
             const data = await backendRes.json();
