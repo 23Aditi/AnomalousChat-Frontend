@@ -1,10 +1,9 @@
 export default async function handler(req, res) {
     const path = req.query.path || '';
     
-    // Your backend uses /api/session/... so keep the full path
     const targetURL = `http://13.217.211.79:5000/api/${path}`;
 
-    console.log("Proxying to:", targetURL);
+    console.log("TARGET URL IS:", targetURL);  // ← will confirm in logs
 
     try {
         const fetchOptions = {
