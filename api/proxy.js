@@ -1,6 +1,10 @@
 export default async function handler(req, res) {
     const path = req.query.path || '';
+    
+    // Strip leading slash if present, then build target URL WITHOUT /api
     const targetURL = `http://13.217.211.79:5000/${path}`;
+
+    console.log("Proxying to:", targetURL);
 
     try {
         const fetchOptions = {
@@ -13,10 +17,22 @@ export default async function handler(req, res) {
         }
 
         const backendRes = await fetch(targetURL, fetchOptions);
-        const data = await backendRes.json();
-
-        res.status(backendRes.status).json(data);
+        
+        // Handle non-JSON responses too
+        const contentType = backendRes.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const data = await backendRes.json();
+            res.status(backendRes.status).json(data);
+        } else {
+            const text = await backendRes.text();
+            res.status(backendRes.status).send(text);
+        }
     } catch (err) {
-        res.status(502).json({ error: 'Backend unreachable', detail: err.message });
+        res.status(502).json({ 
+            error: 'Backend unreachable', 
+            detail: err.message,
+            target: targetURL,
+            cause: err.cause?.message
+        });
     }
 }
