@@ -3,7 +3,6 @@ export default async function handler(req, res) {
     
     const targetURL = `http://13.217.211.79:5000/api/${path}`;
 
-    console.log("TARGET URL IS:", targetURL);  // ← will confirm in logs
 
     try {
         const fetchOptions = {
