@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room - AnomalousChat</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Chat Page Specific Styles */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--bg-primary);
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background-color: var(--bg-secondary);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--bg-tertiary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .chat-header .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header .session-code {
+            font-family: var(--font-mono);
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .chat-header .expiry-timer {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Chat Messages Area */
+        #chatBox {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            background-image: radial-gradient(var(--bg-tertiary) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            max-width: 70%;
+        }
+
+        .message.you {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message.stranger {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.you .message-bubble {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            border-bottom-right-radius: 2px;
+        }
+
+        .message.stranger .message-bubble {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-bottom-left-radius: 2px;
+        }
+
+        .message-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Chat Input Area */
+        .chat-input-area {
+            padding: 15px 20px;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--bg-tertiary);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .chat-input-area button {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* System Messages */
+        .system-message {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="info">
+                <div class="session-code">Session: <span id="displaySessionId">------</span></div>
+                <div class="expiry-timer">Expires in: <span id="countdownTimer">--:--:--</span></div>
+            </div>
+            <button id="leaveBtn" class="btn btn-danger" style="padding: 8px 15px; font-size: 0.9rem;">Leave Session</button>
+            <button id="terminateBtn" class="btn btn-danger" style="padding: 8px 15px; font-size: 0.9rem;">Terminate Session</button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chatBox">
+            <!-- Messages will be injected here -->
+            <div class="system-message">Connecting to secure session...</div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <!-- Socket.io Client Library (CDN) -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <!-- Config -->
+    <script src="js/config.js"></script>
+    <!-- Chat Logic -->
+    <script src="js/chat.js"></script>
+</body>
+</html>

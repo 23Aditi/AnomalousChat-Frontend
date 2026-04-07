@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnomalousChat - Anonymous Secure Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo">Anomalous<span>Chat</span></a>
+        <div class="nav-links">
+            <a href="login.html">Login / Join Session</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Chat Without Identity.</h1>
+            <p>Create secure, ephemeral chat sessions that self-destruct. No logs, no history, just privacy.</p>
+        </div>
+
+        <!-- Create Session Card -->
+        <div class="card">
+            <h2>Create a Session</h2>
+            <form id="createSessionForm">
+                <!-- Expiry Dropdown -->
+                <div class="form-group">
+                    <label for="expiry">Session Expiry</label>
+                    <select id="expiry" class="form-control" required>
+                        <!-- Options will be populated by JS (1-24 hours) -->
+                    </select>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group">
+                    <label for="password">Session Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Set a password to join" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Create Session</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Displaying Session ID -->
+    <div id="sessionModal" class="modal">
+        <div class="modal-content">
+            <h3>Session Created Successfully</h3>
+            <p>Your Session ID is:</p>
+            
+            <!-- Session ID Display -->
+            <div id="generatedSessionId" class="session-id-display">******</div>
+            
+            <!-- Copy Button -->
+            <button id="copyBtn" class="btn btn-secondary" style="margin-bottom: 15px;">
+                Copy to Clipboard
+            </button>
+            
+            <p style="font-size: 0.8rem; color: var(--danger); margin-bottom: 15px;">
+                Note: Copy this ID now. You will need it to login.
+            </p>
+
+            <!-- Proceed Button -->
+            <a href="login.html" id="proceedBtn" class="btn btn-primary" style="text-decoration: none; display: block;">
+                Proceed to Login
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 AnomalousChat. Secure & Anonymous.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/landing.js"></script>
+</body>
+</html>

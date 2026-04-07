@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Session - AnomalousChat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo">Anomalous<span>Chat</span></a>
+        <div class="nav-links">
+            <a href="index.html">Create Session</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Hero Section (Smaller) -->
+        <div class="hero" style="padding: 2rem 0;">
+            <h1>Join a Session</h1>
+            <p>Enter the Session ID and password shared with you to start chatting.</p>
+        </div>
+
+        <!-- Join Session Card -->
+        <div class="card">
+            <form id="joinSessionForm">
+                <!-- Session ID Input -->
+                <div class="form-group">
+                    <label for="sessionId">Session ID</label>
+                    <input type="text" id="sessionId" class="form-control" placeholder="Enter 8-character ID" required maxlength="8";>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter session password" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Join Session</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 AnomalousChat. Secure & Anonymous.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>
