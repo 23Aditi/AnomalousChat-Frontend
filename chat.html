@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Room - AnomalousChat</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* --- Enhanced Chat Page Styles (Scoped to .chat-container) --- */
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Header --- */
+        .chat-header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(26,26,26,0.95) 100%);
+            padding: 15px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .session-info { display: flex; flex-direction: column; }
+        .session-info .label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .session-code { font-family: var(--font-mono); color: var(--accent-primary); font-weight: bold; font-size: 1.2rem; text-shadow: 0 0 8px rgba(0, 243, 255, 0.3); }
+
+        .timer-box {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .timer-box i { color: var(--accent-secondary); }
+
+        .header-right { display: flex; align-items: center; gap: 15px; }
+
+        /* Connection Status */
+        .conn-status {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.8rem; color: var(--text-secondary);
+            padding: 5px 10px; background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
+        .conn-status .dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--danger); animation: pulse 2s infinite; }
+        .conn-status.connected .dot { background-color: var(--success); animation: none; }
+        .conn-status.connected .text { color: var(--success); }
+
+        /* Buttons */
+        .btn-header {
+            background: transparent;
+            border: 1px solid var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .btn-header:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--text-secondary); }
+        .btn-header.active { color: var(--accent-primary); border-color: var(--accent-primary); }
+        
+        .btn-terminate { border-color: var(--danger); color: var(--danger); }
+        .btn-terminate:hover { background: var(--danger); color: white; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3); }
+
+        /* --- Chat Box --- */
+        #chatBox {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            background-image: radial-gradient(var(--bg-tertiary) 1px, transparent 1px);
+            background-size: 25px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #chatBox::-webkit-scrollbar { width: 6px; }
+        #chatBox::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        #chatBox::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
+        #chatBox::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+        .message { display: flex; flex-direction: column; max-width: 65%; animation: slideUp 0.2s ease-out; }
+        .message.you { align-self: flex-end; align-items: flex-end; }
+        .message.stranger { align-self: flex-start; align-items: flex-start; }
+
+        .message-bubble {
+            padding: 12px 18px; border-radius: 20px;
+            font-size: 0.95rem; line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .message.you .message-bubble { background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); color: #fff; border-bottom-right-radius: 4px; font-weight: 500; }
+        .message.stranger .message-bubble { background-color: var(--bg-secondary); border: 1px solid var(--bg-tertiary); color: var(--text-primary); border-bottom-left-radius: 4px; }
+
+        .message-meta { font-size: 0.7rem; color: var(--text-secondary); margin-top: 5px; padding: 0 5px; display: flex; align-items: center; gap: 5px; }
+
+        .system-message {
+            text-align: center; font-size: 0.75rem; color: var(--text-secondary); margin: 15px 0;
+            padding: 5px 15px; background: rgba(255,255,255,0.03); border-radius: 20px;
+            align-self: center; border: 1px dashed var(--bg-tertiary);
+        }
+
+        /* --- Input Area --- */
+        .chat-input-area { padding: 20px; background-color: var(--bg-secondary); border-top: 1px solid var(--bg-tertiary); flex-shrink: 0; }
+        .input-wrapper {
+            display: flex; background-color: var(--bg-primary); border-radius: 30px;
+            border: 1px solid var(--bg-tertiary); padding: 4px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-wrapper:focus-within { border-color: var(--accent-primary); box-shadow: 0 0 15px rgba(0, 243, 255, 0.15); }
+        .input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-primary); padding: 12px 20px; font-size: 1rem; outline: none; }
+        .input-wrapper input::placeholder { color: var(--text-secondary); }
+        .input-wrapper button {
+            background-color: var(--accent-primary); color: var(--bg-primary); border: none;
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex; justify-content: center; align-items: center; font-size: 1.1rem;
+        }
+        .input-wrapper button:hover { transform: scale(1.1); background-color: var(--accent-secondary); color: white; }
+
+        /* --- Animations --- */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* --- Mobile --- */
+        @media (max-width: 768px) {
+            .chat-header { padding: 10px 15px; }
+            .btn-header span { display: none; } /* Hide text on mobile */
+            .btn-header { padding: 8px 12px; }
+            .session-code { font-size: 1rem; }
+            .message { max-width: 80%; }
+            .chat-input-area { padding: 10px; }
+            .input-wrapper input { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="session-info">
+                    <span class="label">Session ID</span>
+                    <span class="session-code" id="displaySessionId">------</span>
+                </div>
+                <div class="timer-box">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span id="countdownTimer">--:--:--</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="conn-status" id="connStatus">
+                    <span class="dot"></span>
+                    <span class="text">Connecting</span>
+                </div>
+                
+                <div style="display: flex; gap: 8px;">
+                    <!-- Sound Toggle Button -->
+                    <button id="soundToggleBtn" class="btn-header active" title="Sound On">
+                        <i class="fas fa-bell"></i>
+                        <span>Sound</span>
+                    </button>
+
+                    <button id="leaveBtn" class="btn-header" title="Leave Session">
+                        <i class="fas fa-right-from-bracket"></i>
+                        <span>Leave</span>
+                    </button>
+                    <button id="terminateBtn" class="btn-header btn-terminate" title="Terminate Session">
+                        <i class="fas fa-power-off"></i>
+                        <span>Terminate</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chatBox">
+            <div class="system-message"><i class="fas fa-shield-halved"></i> Establishing secure handshake...</div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                <button id="sendBtn" title="Send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Socket.io Client Library (CDN) -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <!-- Config -->
+    <script src="js/config.js"></script>
+    <!-- Chat Logic -->
+    <script src="js/chat.js"></script>
+</body>
+</html>
